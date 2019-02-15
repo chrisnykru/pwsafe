@@ -1,0 +1,3 @@
+
+// XXX interesting... we do want the ability for the client to pass in the stretchedKey... no need to force client to
+// re-derive it every time.
