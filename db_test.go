@@ -2,6 +2,7 @@
 package pwsafe
 
 import (
+	"errors"
 	"testing"
 	"time"
 	"reflect"
@@ -152,7 +153,6 @@ func TestEncode(t *testing.T) {
 	}
 }
 
-/*
 func TestSetters(t *testing.T) {
 	db, err := ReadFile("testdata/simple.psafe3", []byte("bogus12345"))
 	if err != nil {
@@ -161,38 +161,60 @@ func TestSetters(t *testing.T) {
 
 	// SetUUID
 	expectedUUID := [16]byte{0x3, 0x95, 0x85, 0xc3, 0x41, 0x9d, 0x4a, 0xb1, 0x99, 0x2, 0xf5, 0x38, 0xf7, 0xb7, 0xda, 0x1}
-	testing2.AssertEquals(t, expectedUUID, db.hdr.UUID)
+	if db.hdr.UUID != expectedUUID {
+		t.Errorf("db.hdr.UUID = %v, want %v", db.hdr.UUID, expectedUUID)
+	}
+
 	newUUID := [16]byte{0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb, 0xc, 0xd, 0xe, 0xf}
 	db.SetUUID(newUUID)
-	testing2.AssertEquals(t, newUUID, db.hdr.UUID)
-
+	if db.hdr.UUID != newUUID {
+		t.Errorf("db.hdr.UUID = %v, want %v", db.hdr.UUID, newUUID)
+	}
+	
 	// SetName
 	expectedName := ""
-	testing2.AssertEquals(t, expectedName, db.hdr.Name)
-
+	if db.hdr.Name != expectedName {
+		t.Errorf("db.hdr.Name = %v, want %v", db.hdr.Name, expectedName)
+	}
+	
 	newName := "someDB_Name"
 	err = db.SetName(newName)
-	testing2.AssertEquals(t, nil, err)
-	testing2.AssertEquals(t, newName, db.hdr.Name)
-
+	if err != nil {
+		t.Error(err)
+	}
+	if db.hdr.Name != newName {
+		t.Errorf("db.hdr.Name = %v, want %v", db.hdr.Name, newName)
+	}
+	
 	err = db.SetName(invalidUTF8String)
 	expectedErr := errors.New("string is not valid UTF8")
-	testing2.AssertEquals(t, expectedErr, err)
-
+	if !reflect.DeepEqual(err, expectedErr) {
+		t.Errorf("err = %v, want %v", err, expectedErr)
+	}
+	
 	// SetDescription
 	expectedDescription := ""
-	testing2.AssertEquals(t, expectedDescription, db.hdr.Description)
-
+	if db.hdr.Description != expectedDescription {
+		t.Errorf("db.hdr.Description = %v, want %v", db.hdr.Description, expectedDescription)
+	}
+	
 	newDescription := "some new description"
 	err = db.SetDescription(newDescription)
-	testing2.AssertEquals(t, nil, err)
-	testing2.AssertEquals(t, newDescription, db.hdr.Description)
-
+	if err != nil {
+		t.Error(err)
+	}
+	if db.hdr.Description != newDescription {
+		t.Errorf("db.hdr.Description = %v, want %v", db.hdr.Description, newDescription)
+	}
+	
 	err = db.SetDescription(invalidUTF8String)
 	expectedErr = errors.New("string is not valid UTF8")
-	testing2.AssertEquals(t, expectedErr, err)
+	if !reflect.DeepEqual(err, expectedErr) {
+		t.Errorf("err = %v, want %v", err, expectedErr)
+	}
 }
 
+/*
 func TestSimpleDB(t *testing.T) {
 	db, err := ReadFile("testdata/simple.psafe3", []byte("bogus12345"))
 	if err != nil {
