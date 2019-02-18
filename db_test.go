@@ -214,7 +214,6 @@ func TestSetters(t *testing.T) {
 	}
 }
 
-/*
 func TestSimpleDB(t *testing.T) {
 	db, err := ReadFile("testdata/simple.psafe3", []byte("bogus12345"))
 	if err != nil {
@@ -421,6 +420,7 @@ func TestSimpleDB(t *testing.T) {
 		},
 		records: records,
 	}
-	testing2.AssertEquals(t, expectedDB, db)
+	if !reflect.DeepEqual(db, expectedDB) {
+		t.Errorf("db = %v, want %v", db, expectedDB)
+	}
 }
-*/
