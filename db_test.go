@@ -119,25 +119,36 @@ func TestEncode(t *testing.T) {
 	}
 	encodedDB, err := db.Encode([]byte("bogus12345"), db.iter)
 	if err != nil {
-		t.Error(nil)
+		t.Error(err)
 	}
 	db2, err := Decode(encodedDB, []byte("bogus12345"), 0, nil)
 	if err != nil {
-		t.Error(nil)
+		t.Error(err)
 	}
 
-	testing2.AssertEquals(t, db.iter, db2.iter)
-	testing2.AssertEquals(t, db.hdr.UUID, db2.hdr.UUID)
-	testing2.AssertEquals(t, db.hdr.Name, db2.hdr.Name)
-	testing2.AssertEquals(t, db.hdr.Description, db2.hdr.Description)
-	testing2.AssertEquals(t, db.hdr.UnimplementedFields, db2.hdr.UnimplementedFields)
-	testing2.AssertEquals(t, db.records, db2.records)
+	if db.iter != db2.iter {
+		t.Errorf("db.iter = %v, want %v", db.iter, db2.iter)
+	}
+	if db.hdr.UUID != db2.hdr.UUID {
+		t.Errorf("db.hdr.UUID = %v, want %v", db.hdr.UUID, db2.hdr.UUID)
+	}
+	if db.hdr.Name != db2.hdr.Name {
+		t.Errorf("db.hdr.Name = %v, want %v", db.hdr.Name, db2.hdr.Name)
+	}
+	if db.hdr.Description != db2.hdr.Description {
+		t.Errorf("db.hdr.Description = %v, want %v", db.hdr.Description, db2.hdr.Description)
+	}
+	if !reflect.DeepEqual(db.hdr.UnimplementedFields, db2.hdr.UnimplementedFields) {
+		t.Errorf("db.hdr.UnimplementedFields = %v, want %v", db.hdr.UnimplementedFields, db2.hdr.UnimplementedFields)
+	}
+	if !reflect.DeepEqual(db.records, db2.records) {
+		t.Errorf("db.records = %v, want %v", db.records, db2.records)
+	}
 
 	db = new(PWSafeV3)
 	_, err = db.Encode([]byte("bogus12345"), db.iter)
-	expectedErr := errors.New("invalid database")
-	if err != expectedErr {
-		t.Errorf("err = %v, want %v", err, expectedErr)
+	if err != ErrInvalidDatabase {
+		t.Errorf("err = %v, want %v", err, ErrInvalidDatabase)
 	}
 }
 

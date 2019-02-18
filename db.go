@@ -43,6 +43,10 @@ const (
 	eofMarker = "PWS3-EOFPWS3-EOF"
 )
 
+var (
+	ErrInvalidDatabase = errors.New("invalid database")
+)
+
 type RawField struct {
 	Kind uint8
 	Data []byte
@@ -336,7 +340,7 @@ func encodeRecord(b *bytes.Buffer, r *Record, mac hash.Hash) {
 // Useful for saving db to file
 func (db *PWSafeV3) Encode(pass []byte, iter uint32) ([]byte, error) {
 	if !db.isValid {
-		return nil, errors.New("invalid database")
+		return nil, ErrInvalidDatabase
 	}
 
 	var b bytes.Buffer
