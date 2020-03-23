@@ -39,6 +39,8 @@ import (
 	"unicode/utf8"
 )
 
+const Version = "0.0.1"
+
 const (
 	eofMarker = "PWS3-EOFPWS3-EOF"
 )
